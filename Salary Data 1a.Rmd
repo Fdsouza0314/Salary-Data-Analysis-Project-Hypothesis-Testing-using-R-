@@ -1,0 +1,90 @@
+---
+title: "Salary Data"
+author: "Flavia Dsouza"
+date: "2025-11-18"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(include = TRUE, echo = TRUE, warning = FALSE, message = FALSE, comment = NA, eval = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+```
+
+
+## Use the readxl package and 'read_excel' function to read the attached Excel data. Call this dataframe 'my_data'. Use the str() function and describe the characteristics of the variables.
+
+
+```{r}
+library(readxl)
+```
+
+
+```{r}
+my_data <- read_excel("C:/Users/flavi/Downloads/Salary_Data.xlsx")
+```
+
+
+```{r}
+str(my_data)
+```
+
+
+## Use the summary(my_data) syntax to summarize the variables in the salary dataframe and interpret the results.
+
+```{r}
+summary(my_data)
+```
+
+
+
+##Use the pipe operator and group_by() function to count the number of observations ("Counts") for males and females. What can you say about the proportion of males vs. females in the sample?
+
+```{r}
+library(dplyr)
+```
+
+```{r}
+my_data %>%
+  group_by(Gender) %>%
+  summarise(Counts = n()) %>% 
+  mutate(porportion = Counts/ sum(Counts))
+```
+
+
+## Use the appropriate R function to calculate the average salary for the whole sample. Then test the hypothesis that the average annual wage for the population represented by the sample is $90,000. Please list the appropriate null and alternative hypotheses, specify the rejection rule, and explain the results.
+
+```{r}
+mean(my_data$Salary)
+```
+
+
+Null Hypothesis: mean_salary = $90000
+Alternative Hypotheis: mean_salary != $90000
+
+```{r}
+t.test(my_data$Salary, mu = 90000)
+```
+Conclusion from the t-test:
+p-value = 0.01001 which is less than 0.05 
+There is statistically significant evidence that the mean salary of the population is not equal to $90000.
+
+
+
+## Use the appropriate R functions to calculate the average salary for males and females in the sample. Then, test the hypothesis that claims that the average annual wage for men and women is equal. Please list the appropriate null and alternative hypotheses, specify the rejection rule, and explain the results.
+
+```{r}
+my_data %>%
+  group_by(Gender) %>%
+  summarise(Average_Salary = mean(Salary, na.rm = TRUE))
+```
+```{r}
+t.test(Salary ~ Gender, data = my_data)
+```
+
+The p-value = 0.6453 which is greater than 0.05 that is we fail to reject the null hypothesis
+
+There is no statistically significant difference in average salaries of female and male. 
